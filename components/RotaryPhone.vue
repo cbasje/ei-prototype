@@ -45,13 +45,27 @@ onMounted(() => {
         <h2>Rotary phone</h2>
 
         <audio ref="rotaryPhone"></audio>
-        <button class="btn" @click="play">
-            <Icon v-if="!playing" name="ph:play-fill" class="inline-block" />
-            <Icon v-else name="ph:pause-fill" class="inline-block" />
-        </button>
-        <span class="flex flex-col flex-1 text-sm">
-            {{ formatDuration(currentTime) }} /
-            {{ formatDuration(duration) }}
-        </span>
+
+        <div class="flex flex-row items-center gap-3">
+            <button class="btn" @click="play">
+                <Icon
+                    v-if="!playing"
+                    name="ph:play-fill"
+                    class="inline-block"
+                />
+                <Icon v-else name="ph:pause-fill" class="inline-block" />
+            </button>
+            <div class="flex flex-col gap-1">
+                <progress
+                    class="progress progress-primary w-56"
+                    :value="currentTime"
+                    :max="duration"
+                ></progress>
+                <span class="flex flex-col flex-1 text-sm">
+                    {{ formatDuration(currentTime) }} /
+                    {{ formatDuration(duration) }}
+                </span>
+            </div>
+        </div>
     </div>
 </template>
