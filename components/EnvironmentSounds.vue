@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const loop = ref(false);
 const environment = ref<HTMLAudioElement>();
 const { playing, currentTime, duration, volume } = useMediaControls(
     environment,
@@ -22,7 +21,7 @@ onMounted(() => {
     >
         <h2>Environment</h2>
 
-        <audio ref="environment" :loop="loop" autoplay></audio>
+        <audio ref="environment" loop autoplay></audio>
         <button class="btn" @click="playing = !playing">
             <Icon v-if="!playing" name="ph:play-fill" class="inline-block" />
             <Icon v-else name="ph:pause-fill" class="inline-block" />
