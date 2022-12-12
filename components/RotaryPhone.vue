@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-const loop = ref(false);
 const rotaryPhone = ref<HTMLAudioElement>();
 const { playing, currentTime, duration, volume } = useMediaControls(
     rotaryPhone,
@@ -11,6 +10,26 @@ const { playing, currentTime, duration, volume } = useMediaControls(
 const formatDuration = (seconds: number) =>
     new Date(1000 * seconds).toISOString().slice(14, 19);
 
+const play = async () => {
+    if (!playing.value) {
+        const repeatTimes = 5;
+        const repeatDelay = 4 * 1000;
+
+        const a = Array(repeatTimes);
+        for await (const iterator of a) {
+            playing.value = true;
+
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve(true);
+                }, repeatDelay);
+            });
+        }
+    } else {
+        playing.value = false;
+    }
+};
+
 onMounted(() => {
     volume.value = 0.5;
 });
@@ -21,12 +40,12 @@ onMounted(() => {
         class="outline-none"
         :tabindex="0"
         autofocus
-        @keydown.prevent.space="playing = !playing"
+        @keydown.prevent.space="play"
     >
         <h2>Rotary phone</h2>
 
-        <audio ref="rotaryPhone" :loop="loop"></audio>
-        <button class="btn" @click="playing = !playing">
+        <audio ref="rotaryPhone"></audio>
+        <button class="btn" @click="play">
             <Icon v-if="!playing" name="ph:play-fill" class="inline-block" />
             <Icon v-else name="ph:pause-fill" class="inline-block" />
         </button>
