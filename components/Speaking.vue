@@ -110,8 +110,8 @@ const stop = () => {
                 <input
                     type="text"
                     v-model="extraOption.text"
-                    placeholder="Type here"
-                    className="input input-bordered w-full max-w-sm"
+                    placeholder="Type an extra option here..."
+                    class="input input-bordered w-full max-w-sm"
                 />
             </form>
             <div class="btn-group">
