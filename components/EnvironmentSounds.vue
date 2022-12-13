@@ -22,7 +22,7 @@ onMounted(() => {
         <h2>Environment</h2>
 
         <audio ref="environment" loop autoplay></audio>
-        <button class="btn" @click="playing = !playing">
+        <button class="btn btn-primary" @click="playing = !playing">
             <Icon v-if="!playing" name="ph:play-fill" class="inline-block" />
             <Icon v-else name="ph:pause-fill" class="inline-block" />
         </button>

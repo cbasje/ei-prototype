@@ -47,7 +47,7 @@ onMounted(() => {
         <audio ref="rotaryPhone"></audio>
 
         <div class="flex flex-row items-center gap-3">
-            <button class="btn" @click="play">
+            <button class="btn btn-primary" @click="play">
                 <Icon
                     v-if="!playing"
                     name="ph:play-fill"
@@ -57,7 +57,7 @@ onMounted(() => {
             </button>
             <div class="flex flex-col gap-1">
                 <progress
-                    class="progress progress-primary w-56"
+                    class="progress progress-secondary w-56"
                     :value="currentTime"
                     :max="duration"
                 ></progress>
