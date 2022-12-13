@@ -1,38 +1,46 @@
 <script lang="ts" setup>
 interface Language {
     code: string;
-    title: string;
+    name: string;
     speechCode?: string;
 }
 const languages: Language[] = [
-    { code: "BG", title: "Bulgarian" },
-    { code: "CS", title: "Czech" },
-    { code: "DA", title: "Danish" },
-    { code: "DE", title: "German" },
-    { code: "EL", title: "Greek" },
-    { code: "EN", title: "English", speechCode: "en-ZA" },
-    { code: "ES", title: "Spanish", speechCode: "es-CO" },
-    { code: "ET", title: "Estonian" },
-    { code: "FI", title: "Finnish" },
-    { code: "FR", title: "French" },
-    { code: "HU", title: "Hungarian" },
-    { code: "ID", title: "Indonesian" },
-    { code: "IT", title: "Italian" },
-    { code: "JA", title: "Japanese" },
-    { code: "LT", title: "Lithuanian" },
-    { code: "LV", title: "Latvian" },
-    { code: "NL", title: "Dutch", speechCode: "nl-BE" },
-    { code: "PL", title: "Polish" },
-    { code: "PT", title: "Portuguese" },
-    { code: "RO", title: "Romanian" },
-    { code: "RU", title: "Russian" },
-    { code: "SK", title: "Slovak" },
-    { code: "SL", title: "Slovenian" },
-    { code: "SV", title: "Swedish" },
-    { code: "TR", title: "Turkish" },
-    { code: "UK", title: "Ukrainian" },
-    { code: "ZH", title: "Chinese", speechCode: "zh-CN" },
-];
+    { code: "BG", name: "Bulgarian" },
+    { code: "CS", name: "Czech" },
+    { code: "DA", name: "Danish" },
+    { code: "DE", name: "German" },
+    { code: "EL", name: "Greek" },
+    { code: "EN", name: "English", speechCode: "en-ZA" },
+    { code: "ES", name: "Spanish", speechCode: "es-CO" },
+    { code: "ET", name: "Estonian" },
+    { code: "FI", name: "Finnish" },
+    { code: "FR", name: "French" },
+    { code: "HU", name: "Hungarian" },
+    { code: "ID", name: "Indonesian" },
+    { code: "IT", name: "Italian" },
+    { code: "JA", name: "Japanese" },
+    { code: "LT", name: "Lithuanian" },
+    { code: "LV", name: "Latvian" },
+    { code: "NL", name: "Dutch", speechCode: "nl-BE" },
+    { code: "PL", name: "Polish" },
+    { code: "PT", name: "Portuguese" },
+    { code: "RO", name: "Romanian" },
+    { code: "RU", name: "Russian" },
+    { code: "SK", name: "Slovak" },
+    { code: "SL", name: "Slovenian" },
+    { code: "SV", name: "Swedish" },
+    { code: "TR", name: "Turkish" },
+    { code: "UK", name: "Ukrainian" },
+    { code: "ZH", name: "Chinese", speechCode: "zh-CN" },
+].sort((a, b) => {
+    const nameA = a.name;
+    const nameB = b.name;
+
+    if (nameA < nameB) return -1;
+    else if (nameA > nameB) return 1;
+
+    return 0;
+});
 
 const sourceText = ref("");
 const destinationLang = ref(0);
@@ -98,7 +106,7 @@ const stop = () => {
                 >
                     <option disabled selected>Select language</option>
                     <template v-for="(l, i) in languages" :key="l.code">
-                        <option :value="i">{{ l.title }}</option>
+                        <option :value="i">{{ l.name }}</option>
                     </template>
                 </select>
             </form>
