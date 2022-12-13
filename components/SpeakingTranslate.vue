@@ -10,7 +10,7 @@ const languages: Language[] = [
     { code: "DA", title: "Danish" },
     { code: "DE", title: "German" },
     { code: "EL", title: "Greek" },
-    { code: "EN", title: "English" },
+    { code: "EN", title: "English", speechCode: "en-ZA" },
     { code: "ES", title: "Spanish", speechCode: "es-CO" },
     { code: "ET", title: "Estonian" },
     { code: "FI", title: "Finnish" },
