@@ -6,24 +6,32 @@ type Option = {
 
 const options: Option[] = [
     {
-        text: "Hey, this is the hotline for everyone who needs help.",
-        lang: "en-ZA",
-    },
-    {
-        text: "Hoi, dit is de hotline voor iedereen die hulp nodig heeft.",
+        text: "Hoi, bedankt voor het oppakken! Dit is een telefoon voor iedereen die hulp nodig heeft in het station.",
         lang: "nl-BE",
     },
     {
-        text: "Hey, esta es la línea directa para todos los que necesitan ayuda.",
-        lang: "es-US",
+        text: "Aan de andere kant van de lijn is iemand die hulp nodig heeft met het vinden van een trein. Kun je daar mee helpen?",
+        lang: "nl-BE",
     },
     {
-        text: "Hej, det här är en telefonjour för alla som behöver hjälp.",
-        lang: "sv-SE",
+        text: "Oké, dat is prima. Fijne dag!",
+        lang: "nl-BE",
     },
     {
-        text: "嘿，这是每个需要帮助的人的热线电话",
-        lang: "zh-CN",
+        text: "Oké, dan verbind ik jullie nu! De persoon spreekt Engels.",
+        lang: "nl-BE",
+    },
+    {
+        text: "Hey, thanks for picking up! This phone connects you to locals who can help you.",
+        lang: "en-ZA",
+    },
+    {
+        text: "What do you need help with?",
+        lang: "en-ZA",
+    },
+    {
+        text: "Okay, I am calling now!",
+        lang: "en-ZA",
     },
 ];
 const optionIndex = ref(0);
@@ -69,8 +77,6 @@ const stop = () => {
 
 <template>
     <ul class="w-full flex flex-col gap-3 list-none pl-0">
-        <h2 class="mb-2">Speaking</h2>
-
         <li
             v-for="(o, i) in options"
             :key="o.text"
@@ -143,4 +149,15 @@ const stop = () => {
             </div>
         </li>
     </ul>
+    <!-- <div
+        class="collapse collapse-arrow w-full border border-base-content bg-base-100 rounded-box"
+    >
+        <input type="checkbox" />
+        <div class="collapse-title text-xl font-medium">
+            Focus me to see content
+        </div>
+        <div class="collapse-content">
+            <p>tabindex="0" attribute is necessary to make the div focusable</p>
+        </div>
+    </div> -->
 </template>
