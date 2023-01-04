@@ -9,6 +9,7 @@ const currentTab = ref(0);
 
         <EnvironmentSounds />
         <RotaryPhone />
+        <Arduino />
 
         <h2>Speaking</h2>
         <div class="tabs">
