@@ -1,7 +1,12 @@
 import io from "socket.io-client";
 
 export default defineNuxtPlugin(() => {
-    const socket = io("/");
+    const url = "https://localhost:3333";
+
+    const socket = io(url, {
+        transports: ["websocket", "polling"],
+        reconnectionAttempts: 10,
+    });
 
     return {
         provide: {
