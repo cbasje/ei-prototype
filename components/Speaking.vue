@@ -4,8 +4,6 @@ const currentTab = ref(0);
 </script>
 
 <template>
-    <h2>Speaking</h2>
-
     <div class="tabs">
         <template v-for="(t, i) in tabs" :key="t">
             <a

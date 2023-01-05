@@ -13,14 +13,14 @@ onMounted(() => {
 </script>
 
 <template>
+    <h3>Environment</h3>
+
     <div
         class="outline-none"
         :tabindex="0"
         autofocus
         @keydown.prevent.space="playing = !playing"
     >
-        <h2>Environment</h2>
-
         <audio ref="environment" loop autoplay></audio>
         <button class="btn btn-primary" @click="playing = !playing">
             <Icon v-if="!playing" name="ph:play-fill" class="inline-block" />

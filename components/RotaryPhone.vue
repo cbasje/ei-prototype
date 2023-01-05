@@ -36,14 +36,14 @@ onMounted(() => {
 </script>
 
 <template>
+    <h3>Rotary phone</h3>
+
     <div
         class="outline-none"
         :tabindex="0"
         autofocus
         @keydown.prevent.space="play"
     >
-        <h2>Rotary phone</h2>
-
         <audio ref="rotaryPhone"></audio>
 
         <div class="flex flex-row items-center gap-3">

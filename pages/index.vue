@@ -1,13 +1,16 @@
 <template>
-    <main class="flex flex-col justify-start items-start gap-3 p-3">
-        <h1>EI prototype</h1>
+    <main>
+        <h1 class="mt-5">EI prototype</h1>
 
+        <h2>Sounds</h2>
         <EnvironmentSounds />
         <RotaryPhone />
-        <Speaking />
-        <Arduino />
 
-        <footer class="text-sm opacity-25">
+        <h2>Conversation</h2>
+        <ArduinoState />
+        <Speaking />
+
+        <footer class="text-sm opacity-25 mb-5">
             &copy; 2022 - Sebastiaan Benjamins
         </footer>
     </main>
