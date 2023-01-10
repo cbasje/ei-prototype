@@ -5,42 +5,18 @@ interface Language {
     speechCode?: string;
 }
 const languages: Language[] = [
-    { code: "BG", name: "Bulgarian" },
-    { code: "CS", name: "Czech" },
-    { code: "DA", name: "Danish" },
-    { code: "DE", name: "German" },
-    { code: "EL", name: "Greek" },
     { code: "EN", name: "English", speechCode: "en-ZA" },
-    { code: "ES", name: "Spanish", speechCode: "es-CO" },
-    { code: "ET", name: "Estonian" },
-    { code: "FI", name: "Finnish" },
-    { code: "FR", name: "French" },
-    { code: "HU", name: "Hungarian" },
-    { code: "ID", name: "Indonesian" },
-    { code: "IT", name: "Italian" },
-    { code: "JA", name: "Japanese" },
-    { code: "LT", name: "Lithuanian" },
-    { code: "LV", name: "Latvian" },
     { code: "NL", name: "Dutch", speechCode: "nl-BE" },
-    { code: "PL", name: "Polish" },
-    { code: "PT", name: "Portuguese" },
-    { code: "RO", name: "Romanian" },
-    { code: "RU", name: "Russian" },
-    { code: "SK", name: "Slovak" },
-    { code: "SL", name: "Slovenian" },
-    { code: "SV", name: "Swedish" },
-    { code: "TR", name: "Turkish" },
-    { code: "UK", name: "Ukrainian" },
+    { code: "DE", name: "German" },
+    { code: "FR", name: "French" },
+    { code: "IT", name: "Italian" },
+    { code: "ES", name: "Spanish", speechCode: "es-CO" },
     { code: "ZH", name: "Chinese", speechCode: "zh-CN" },
-].sort((a, b) => {
-    const nameA = a.name;
-    const nameB = b.name;
-
-    if (nameA < nameB) return -1;
-    else if (nameA > nameB) return 1;
-
-    return 0;
-});
+    { code: "JA", name: "Japanese" },
+    { code: "ID", name: "Indonesian" },
+    { code: "TR", name: "Turkish" },
+    { code: "PL", name: "Polish" },
+];
 
 const sourceText = ref("");
 const destinationLang = ref(0);
@@ -85,6 +61,13 @@ const pause = () => {
 const stop = () => {
     window.speechSynthesis.cancel();
 };
+
+// SocketIO emits
+const { $io } = useNuxtApp();
+
+$io.on("dial", (lang: number) => {
+    destinationLang.value = lang;
+});
 </script>
 
 <template>
