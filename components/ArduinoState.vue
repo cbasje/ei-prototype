@@ -1,11 +1,34 @@
 <script lang="ts" setup>
 const receiverState = ref(false);
 
+const { speak } = useSpeechSynthesis(
+    `
+
+
+
+
+
+
+
+
+Hey, how are you?`,
+    {
+        lang: "en-GB",
+        volume: 1,
+        rate: 0.9,
+    }
+);
+
 // SocketIO emits
 const { $io } = useNuxtApp();
 
 $io.on("receiver", (state: boolean) => {
     receiverState.value = state;
+
+    if (state) {
+        console.log("🗣️");
+        speak();
+    }
 });
 </script>
 

@@ -21,7 +21,7 @@ onMounted(() => {
         autofocus
         @keydown.prevent.space="playing = !playing"
     >
-        <audio ref="environment" loop autoplay></audio>
+        <audio ref="environment" loop></audio>
         <button class="btn btn-primary" @click="playing = !playing">
             <Icon v-if="!playing" name="ph:play-fill" class="inline-block" />
             <Icon v-else name="ph:pause-fill" class="inline-block" />
