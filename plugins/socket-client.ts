@@ -5,7 +5,7 @@ export default defineNuxtPlugin(() => {
 
     const socket = io(url, {
         transports: ["websocket", "polling"],
-        reconnectionAttempts: 10,
+        reconnectionAttempts: 3,
     });
 
     return {
