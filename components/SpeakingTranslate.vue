@@ -2,8 +2,8 @@
 import type { Language } from "~~/lib/types";
 
 const languages: Language[] = [
-    { code: "en-GB", name: "🇬🇧 English" },
     { code: "nl-BE", name: "🇳🇱 Nederlands" },
+    { code: "en-GB", name: "🇬🇧 English" },
     { code: "de-DE", name: "🇩🇪 Deutsch" },
     { code: "fr-FR", name: "🇫🇷 Français" },
     { code: "it-IT", name: "🇮🇹 Italiano" },
