@@ -7,31 +7,31 @@ type Option = {
 const options: Option[] = [
     {
         text: "Hoi, bedankt voor het oppakken! Dit is een telefoon voor iedereen die hulp nodig heeft in het station.",
-        lang: "nl-BE",
+        lang: "nl-NL",
     },
     {
         text: "Aan de andere kant van de lijn is iemand die hulp nodig heeft met het vinden van een trein. Kun je daar mee helpen?",
-        lang: "nl-BE",
+        lang: "nl",
     },
     {
         text: "Oké, dat is prima. Fijne dag!",
-        lang: "nl-BE",
+        lang: "nl",
     },
     {
         text: "Oké, dan verbind ik jullie nu! De persoon spreekt Engels.",
-        lang: "nl-BE",
+        lang: "nl",
     },
     {
         text: "Hey, thanks for picking up! This phone connects you to locals who can help you.",
-        lang: "en-ZA",
+        lang: "en",
     },
     {
         text: "What do you need help with?",
-        lang: "en-ZA",
+        lang: "en",
     },
     {
         text: "Okay, I am calling now!",
-        lang: "en-ZA",
+        lang: "en",
     },
 ];
 const optionIndex = ref(0);

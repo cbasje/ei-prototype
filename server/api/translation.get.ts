@@ -12,7 +12,7 @@ export default defineEventHandler((event) => {
     const query = getQuery(event);
 
     const text = String(query.text);
-    const lang = String(query.lang);
+    const lang = String(query.lang).split("-")[0].toUpperCase();
 
     const data = $fetch<TranslationData>(
         "https://api-free.deepl.com/v2/translate",

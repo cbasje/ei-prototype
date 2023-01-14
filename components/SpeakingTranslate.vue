@@ -1,46 +1,68 @@
 <script lang="ts" setup>
-interface Language {
+type Language = {
     code: string;
     name: string;
-    speechCode?: string;
-}
+};
 const languages: Language[] = [
-    { code: "EN", name: "English", speechCode: "en-ZA" },
-    { code: "NL", name: "Dutch", speechCode: "nl-BE" },
-    { code: "DE", name: "German" },
-    { code: "FR", name: "French" },
-    { code: "IT", name: "Italian" },
-    { code: "ES", name: "Spanish", speechCode: "es-CO" },
-    { code: "ZH", name: "Chinese", speechCode: "zh-CN" },
-    { code: "JA", name: "Japanese" },
-    { code: "ID", name: "Indonesian" },
-    { code: "TR", name: "Turkish" },
-    { code: "PL", name: "Polish" },
+    { code: "en-GB", name: "🇬🇧 English" },
+    { code: "nl-BE", name: "🇳🇱 Nederlands" },
+    { code: "de-DE", name: "🇩🇪 Deutsch" },
+    { code: "fr-FR", name: "🇫🇷 Français" },
+    { code: "it-IT", name: "🇮🇹 Italiano" },
+    { code: "es-MX", name: "🇪🇸 Español" },
+    { code: "zh-CN", name: "🇨🇳 汉语/漢語" },
+    { code: "ja-JP", name: "🇯🇵 日本語" },
+    { code: "id-ID", name: "🇮🇩 Bahasa Indonesia" },
+    { code: "tr-TR", name: "🇹🇷 Türkçe" },
+    { code: "pl-PL", name: "🇵🇱 Polski" },
 ];
 
+let synth: SpeechSynthesis;
+const voices = ref<SpeechSynthesisVoice[]>([]);
 const sourceText = ref("");
-const destinationLang = ref(0);
+const destLangIndex = ref(0);
 
-const destinationLangCode = computed(
-    () => languages[destinationLang.value].code
-);
-const destinationSpeechLang = computed(
-    () =>
-        languages[destinationLang.value].speechCode ??
-        languages[destinationLang.value].code
-);
+const destLangCode = computed(() => voices.value[destLangIndex.value].lang);
+const voice = computed(() => voices.value[destLangIndex.value]);
 
 const { data: translationData, refresh } = await useFetch("/api/translation", {
-    query: { text: sourceText, lang: destinationLangCode },
+    query: { text: sourceText, lang: destLangCode },
 });
-const destinationText = computed(() =>
+const destText = computed(() =>
     translationData.value ? translationData.value.translations[0].text : ""
 );
 
-const { isPlaying, status, speak } = useSpeechSynthesis(destinationText, {
-    lang: destinationSpeechLang,
+const speech = useSpeechSynthesis(destText, {
+    voice,
     volume: 1,
     rate: 0.85,
+});
+
+onMounted(() => {
+    if (speech.isSupported.value) {
+        // load at last
+        setTimeout(() => {
+            synth = window.speechSynthesis;
+            voices.value = synth
+                .getVoices()
+                .reduce((prevValue, curValue, i) => {
+                    let newArr = prevValue;
+                    const index = languages.findIndex(
+                        (l) => l.code === curValue.lang
+                    );
+
+                    if (
+                        curValue.localService &&
+                        index !== -1 &&
+                        !prevValue.some((v) => v.lang === curValue.lang)
+                    ) {
+                        newArr[index] = curValue;
+                    }
+
+                    return newArr;
+                }, [] as SpeechSynthesisVoice[]);
+        });
+    }
 });
 
 const translateAndPlay = async () => {
@@ -49,10 +71,10 @@ const translateAndPlay = async () => {
     play();
 };
 const play = () => {
-    if (status.value === "pause") {
+    if (speech.status.value === "pause") {
         window.speechSynthesis.resume();
     } else {
-        speak();
+        speech.speak();
     }
 };
 const pause = () => {
@@ -66,7 +88,7 @@ const stop = () => {
 const { $io } = useNuxtApp();
 
 $io.on("dial", (lang: number) => {
-    destinationLang.value = lang;
+    destLangIndex.value = lang;
 });
 </script>
 
@@ -83,12 +105,9 @@ $io.on("dial", (lang: number) => {
                     placeholder="Type an extra option here..."
                     class="input input-bordered w-full"
                 />
-                <select
-                    class="select select-bordered"
-                    v-model="destinationLang"
-                >
+                <select class="select select-bordered" v-model="destLangIndex">
                     <option disabled selected>Select language</option>
-                    <template v-for="(l, i) in languages" :key="l.code">
+                    <template v-for="(l, i) in languages" :key="i">
                         <option :value="i">{{ l.name }}</option>
                     </template>
                 </select>
@@ -98,21 +117,21 @@ $io.on("dial", (lang: number) => {
             <div class="btn-group">
                 <button
                     class="btn btn-primary"
-                    :disabled="isPlaying"
+                    :disabled="speech.isPlaying.value"
                     @click="() => translateAndPlay()"
                 >
-                    {{ status === "pause" ? "Resume" : "Speak" }}
+                    {{ speech.status.value === "pause" ? "Resume" : "Speak" }}
                 </button>
                 <button
                     class="btn btn-warning"
-                    :disabled="!isPlaying"
+                    :disabled="!speech.isPlaying.value"
                     @click="pause"
                 >
                     Pause
                 </button>
                 <button
                     class="btn btn-error"
-                    :disabled="!isPlaying"
+                    :disabled="!speech.isPlaying.value"
                     @click="stop"
                 >
                     Stop
