@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const tabs = ["Options", "Translation"];
+const tabs = ["Options", "Translation", "Recognition"];
 const currentTab = ref(0);
 </script>
 
@@ -19,4 +19,5 @@ const currentTab = ref(0);
     </div>
     <SpeakingScript v-if="currentTab === 0" />
     <SpeakingTranslate v-if="currentTab === 1" />
+    <SpeakingRecognition v-if="currentTab === 2" />
 </template>

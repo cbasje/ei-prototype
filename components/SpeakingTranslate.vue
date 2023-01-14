@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-type Language = {
-    code: string;
-    name: string;
-};
+import type { Language } from "~~/lib/types";
+
 const languages: Language[] = [
     { code: "en-GB", name: "🇬🇧 English" },
     { code: "nl-BE", name: "🇳🇱 Nederlands" },
