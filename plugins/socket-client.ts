@@ -1,9 +1,9 @@
 import io from "socket.io-client";
 
 export default defineNuxtPlugin(() => {
-    const url = "https://localhost:3333";
+    const config = useRuntimeConfig();
 
-    const socket = io(url, {
+    const socket = io(config.public.socketURL, {
         transports: ["websocket", "polling"],
         reconnectionAttempts: 3,
     });
