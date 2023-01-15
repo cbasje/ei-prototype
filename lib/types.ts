@@ -103,3 +103,11 @@ export type Language = {
     code: string;
     name: string;
 };
+
+export type Message = {
+    id: string;
+    senderId: string;
+    origLang: string;
+    content: string;
+    timestamp: string;
+};

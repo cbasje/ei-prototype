@@ -1,15 +1,20 @@
+<script lang="ts" setup>
+const route = useRoute();
+</script>
+
 <template>
     <NuxtLayout name="main">
-        <h1 class="mt-5">EI prototype</h1>
+        <template v-if="!route.query.chat">
+            <ArduinoState />
 
-        <h2>Sounds</h2>
-        <RotaryPhone />
+            <div class="divider"></div>
+        </template>
 
-        <h2>Conversation</h2>
-        <ArduinoState />
-        <Speaking />
+        <LangPicker class="mb-3" />
 
-        <footer class="text-sm opacity-25 mb-5">
+        <Conversation />
+
+        <footer class="text-sm opacity-25">
             &copy; 2022 - Sebastiaan Benjamins
         </footer>
     </NuxtLayout>

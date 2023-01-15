@@ -1,37 +1,20 @@
 <script lang="ts" setup>
-import type { Language } from "~~/lib/types";
+import { useGlobalStore } from "~~/stores/global";
 
-const languages: Language[] = [
-    { code: "nl-BE", name: "🇳🇱 Nederlands" },
-    { code: "en-GB", name: "🇬🇧 English" },
-    { code: "de-DE", name: "🇩🇪 Deutsch" },
-    { code: "fr-FR", name: "🇫🇷 Français" },
-    { code: "it-IT", name: "🇮🇹 Italiano" },
-    { code: "es-MX", name: "🇪🇸 Español" },
-    { code: "zh-CN", name: "🇨🇳 汉语/漢語" },
-    { code: "ja-JP", name: "🇯🇵 日本語" },
-    { code: "id-ID", name: "🇮🇩 Bahasa Indonesia" },
-    { code: "tr-TR", name: "🇹🇷 Türkçe" },
-    { code: "pl-PL", name: "🇵🇱 Polski" },
-];
+const globalStore = useGlobalStore();
 
 let synth: SpeechSynthesis;
-const voices = ref<SpeechSynthesisVoice[]>([]);
 const sourceText = ref("");
-const destLangIndex = ref(0);
-
-const destLangCode = computed(() => voices.value[destLangIndex.value].lang);
-const voice = computed(() => voices.value[destLangIndex.value]);
 
 const { data: translationData, refresh } = await useFetch("/api/translation", {
-    query: { text: sourceText, lang: destLangCode },
+    query: { text: sourceText, lang: globalStore.lang.code },
 });
 const destText = computed(() =>
     translationData.value ? translationData.value.translations[0].text : ""
 );
 
 const speech = useSpeechSynthesis(destText, {
-    voice,
+    voice: globalStore.voice,
     volume: 1,
     rate: 0.85,
 });
@@ -41,24 +24,7 @@ onMounted(() => {
         // load at last
         setTimeout(() => {
             synth = window.speechSynthesis;
-            voices.value = synth
-                .getVoices()
-                .reduce((prevValue, curValue, i) => {
-                    let newArr = prevValue;
-                    const index = languages.findIndex(
-                        (l) => l.code === curValue.lang
-                    );
-
-                    if (
-                        curValue.localService &&
-                        index !== -1 &&
-                        !prevValue.some((v) => v.lang === curValue.lang)
-                    ) {
-                        newArr[index] = curValue;
-                    }
-
-                    return newArr;
-                }, [] as SpeechSynthesisVoice[]);
+            globalStore.setVoices(synth.getVoices());
         });
     }
 });
@@ -81,13 +47,6 @@ const pause = () => {
 const stop = () => {
     window.speechSynthesis.cancel();
 };
-
-// SocketIO emits
-const { $io } = useNuxtApp();
-
-$io.on("dial", (lang: number) => {
-    destLangIndex.value = lang;
-});
 </script>
 
 <template>
@@ -103,9 +62,12 @@ $io.on("dial", (lang: number) => {
                     placeholder="Type an extra option here..."
                     class="input input-bordered w-full"
                 />
-                <select class="select select-bordered" v-model="destLangIndex">
+                <select
+                    class="select select-bordered"
+                    v-model="globalStore.langIndex"
+                >
                     <option disabled selected>Select language</option>
-                    <template v-for="(l, i) in languages" :key="i">
+                    <template v-for="(l, i) in globalStore.languages" :key="i">
                         <option :value="i">{{ l.name }}</option>
                     </template>
                 </select>

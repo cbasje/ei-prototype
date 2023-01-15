@@ -1,14 +1,14 @@
 import io from "socket.io-client";
-import { v4 as uuid } from "uuid";
+import { useGlobalStore } from "~~/stores/global";
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
     const config = useRuntimeConfig();
-    const id = uuid();
+    const globalStore = useGlobalStore(nuxtApp.$pinia);
 
     const socket = io(config.public.socketURL, {
         transports: ["websocket", "polling"],
         reconnectionAttempts: 3,
-        query: { id },
+        query: { id: globalStore.id },
     });
 
     return {
