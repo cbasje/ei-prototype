@@ -6,37 +6,19 @@ const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
 const receiverState = ref(false);
 
-const { speak } = useSpeechSynthesis(
-    `
-
-
-
-
-
-
-
-
-Hey, how are you?`,
-    {
-        lang: "en-GB",
-        volume: 1,
-        rate: 0.9,
-    }
-);
-
 $io.on("receiver", (state: boolean) => {
     receiverState.value = state;
-
-    if (state) {
-        console.log("🗣️");
-        speak();
-    }
 });
 $io.on("dial", (lang: number) => {
+    console.log("DIAL");
     globalStore.langIndex = lang;
 });
+
 const play = async () => {
     $io.emit("ring");
+};
+const reset = async () => {
+    $io.emit("reset-conversation");
 };
 </script>
 
@@ -58,12 +40,17 @@ const play = async () => {
             </div>
         </div>
 
-        <button
-            class="btn btn-outline px-6 h-auto"
-            @click="play"
-            :disabled="receiverState"
-        >
-            <Icon name="ph:phone-call-fill" class="text-xl" />
-        </button>
+        <div class="btn-group">
+            <button
+                class="btn btn-outline px-6 h-auto"
+                @click="play"
+                :disabled="receiverState"
+            >
+                <Icon name="ph:phone-call-fill" class="text-xl" />
+            </button>
+            <button class="btn btn-outline px-6 h-auto" @click="reset">
+                <Icon name="ph:clock-counter-clockwise-fill" class="text-xl" />
+            </button>
+        </div>
     </div>
 </template>

@@ -104,10 +104,18 @@ export type Language = {
     name: string;
 };
 
+export enum Role {
+    NEWCOMER = "0",
+    LOCAL = "1",
+    ADMIN = "2",
+}
+
 export type Message = {
     id: string;
     senderId: string;
     origLang: string;
     content: string;
     timestamp: string;
+    role: number;
+    recipientRole?: number;
 };

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { v4 as uuid } from "uuid";
-import type { Language } from "~~/lib/types";
+import { Language, Message, Role } from "~~/lib/types";
 
 export const useGlobalStore = defineStore("global", () => {
     const languages: Language[] = [
@@ -20,6 +20,8 @@ export const useGlobalStore = defineStore("global", () => {
     const id = ref(uuid());
     const langIndex = ref(0);
     const voices = ref<SpeechSynthesisVoice[]>([]);
+    const role = ref<Role | undefined>(undefined);
+    const messages = ref<Message[]>([]);
 
     const lang = computed(() => languages[langIndex.value]);
     const voice = computed(() => voices.value[langIndex.value]);
@@ -41,5 +43,15 @@ export const useGlobalStore = defineStore("global", () => {
         }, [] as SpeechSynthesisVoice[]);
     }
 
-    return { id, languages, voices, langIndex, lang, voice, setVoices };
+    return {
+        languages,
+        id,
+        langIndex,
+        voices,
+        role,
+        messages,
+        lang,
+        voice,
+        setVoices,
+    };
 });
