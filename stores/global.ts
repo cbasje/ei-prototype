@@ -15,10 +15,13 @@ export const useGlobalStore = defineStore("global", () => {
         { code: "id-ID", name: "🇮🇩 Bahasa Indonesia" },
         { code: "tr-TR", name: "🇹🇷 Türkçe" },
         { code: "pl-PL", name: "🇵🇱 Polski" },
+        { code: "sv-SE", name: "🇸🇪 Svenska" },
+        { code: "uk-UA", name: "🇺🇦 украї́нська мо́ва" },
+        { code: "pt-PT", name: "🇵🇹 Português" },
     ];
 
     const id = ref(uuid());
-    const langIndex = ref(0);
+    const langIndex = ref(1);
     const voices = ref<SpeechSynthesisVoice[]>([]);
     const role = ref<Role | undefined>(undefined);
     const messages = ref<Message[]>([]);
