@@ -1,5 +1,5 @@
 <template>
-    <Html data-theme="pastel" lang="en" />
+    <Html data-theme="winter" lang="en" />
     <Title>EI prototype</Title>
     <Link rel="icon" href="favicon.ico" />
     <Meta name="theme-color" content="#FFFFFF" />
