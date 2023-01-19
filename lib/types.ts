@@ -116,6 +116,6 @@ export type Message = {
     origLang: string;
     content: string;
     timestamp: string;
-    role: number;
-    recipientRole?: number;
+    role: Role;
+    recipientRole?: Role;
 };
