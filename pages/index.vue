@@ -6,7 +6,7 @@ const globalStore = useGlobalStore();
 
 <template>
     <NuxtLayout name="main">
-        <LangPicker class="mb-3" />
+        <LangPicker />
 
         <Conversation v-if="globalStore.role !== undefined" />
         <RolePicker v-else />
