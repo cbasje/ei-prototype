@@ -1,24 +1,52 @@
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import { useGlobalStore } from "~~/stores/global";
 
 const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
+const { langIndex } = storeToRefs(globalStore);
+
+const speech = useSpeechSynthesis("");
+let synth: SpeechSynthesis;
 
 $io.on("dial", (lang: number) => {
     console.log("DIAL");
-    globalStore.langIndex = lang;
+    langIndex.value = lang;
 });
 
-const languages = globalStore.languages.filter((l, i) => i < 10);
+onMounted(() => {
+    if (speech.isSupported.value) {
+        // load at last
+        setTimeout(() => {
+            synth = window.speechSynthesis;
+            globalStore.setVoices(synth.getVoices());
+        }, 10);
+    }
+});
 </script>
 
 <template>
-    <select class="select select-bordered" v-model="globalStore.langIndex">
-        <option disabled selected>Select language</option>
-        <template v-for="(l, i) in languages" :key="i">
-            <option :value="i">
-                {{ `${i % 10}: ${l.name}` }}
-            </option>
-        </template>
-    </select>
+    <div class="flex gap-3">
+        <select
+            class="flex-grow select select-bordered mb-3"
+            v-model="langIndex"
+            :disabled="!globalStore.voice"
+        >
+            <option disabled selected>Select language</option>
+            <template v-for="(l, i) in globalStore.languages" :key="i">
+                <option :value="i">
+                    {{ `${i}: ${l.name}` }}
+                </option>
+            </template>
+        </select>
+        <div
+            v-if="globalStore.voice"
+            class="btn btn-success btn-square no-animation"
+        >
+            <Icon name="ph:check-fill" />
+        </div>
+        <div v-else class="btn btn-error btn-square no-animation">
+            <Icon name="ph:x-fill" />
+        </div>
+    </div>
 </template>
