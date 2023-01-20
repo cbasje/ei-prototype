@@ -103,6 +103,10 @@ export type Language = {
     code: string;
     name: string;
 };
+export type Question = {
+    content: string;
+    options?: string[];
+};
 
 export enum Role {
     NEWCOMER = "0",
@@ -114,9 +118,9 @@ export type Message = {
     id: string;
     senderId: string;
     origLang: string;
-    content: string;
+    content?: string;
     timestamp: string;
     role: Role;
     recipientRole?: Role;
-    questionNumber?: number;
+    questionIndex?: number;
 };

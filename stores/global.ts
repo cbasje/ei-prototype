@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { v4 as uuid } from "uuid";
-import { Language, Message, Role } from "~~/lib/types";
+import { Language, Message, Question, Role } from "~~/lib/types";
 
 export const useGlobalStore = defineStore("global", () => {
     const languages: Language[] = [
@@ -18,6 +18,54 @@ export const useGlobalStore = defineStore("global", () => {
         { code: "sv-SE", name: "🇸🇪 Svenska" },
         { code: "uk-UA", name: "🇺🇦 украї́нська мо́ва" },
         { code: "pt-PT", name: "🇵🇹 Português" },
+    ];
+    const questions: Question[] = [
+        {
+            content:
+                "Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.",
+            options: [
+                "English",
+                "Deutsch",
+                "Français",
+                "Italiano",
+                "Español",
+                "汉语/漢語",
+                "日本語",
+                "Bahasa Indonesia",
+                "Türkçe",
+                "Nederlands",
+            ],
+        },
+        { content: "Okay, I will talk to you in your language now!" },
+        {
+            content:
+                "This phone can offer you help on lots of different topics by connecting you to a local here in the station or around the city. You can also choose to speak to a service worker from the train company",
+        },
+        {
+            content: "What would you want help with?",
+            options: [
+                "Information on the station",
+                "Help with public transport",
+                "Tips about the Netherlands",
+            ],
+        },
+        {
+            content: "Okay, good! Who do you want to talk to?",
+            options: ["A local", "A service worker", "Google", "Surprise me!"],
+        },
+        {
+            content: "Are you satisfied with the help you received?",
+            options: ["Yes", "No. Please help me again", "No"],
+        },
+        {
+            content:
+                "I'm sorry you were not satisfied. What would you want help with?",
+            options: [
+                "Information on the station",
+                "Help with public transport",
+                "Tips about the Netherlands",
+            ],
+        },
     ];
 
     const id = ref(uuid());
@@ -48,6 +96,7 @@ export const useGlobalStore = defineStore("global", () => {
 
     return {
         languages,
+        questions,
         id,
         langIndex,
         voices,

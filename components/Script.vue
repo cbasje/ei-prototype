@@ -6,34 +6,6 @@ import { useGlobalStore } from "~~/stores/global";
 const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
 
-const questions = [
-    `Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.
-    1 English.
-    2 Deutsch.
-    3 Français.
-    4 Italiano.
-    5 Español.
-    6 汉语/漢語.
-    7 日本語.
-    8 Bahasa Indonesia.
-    9 Türkçe.
-    0 Nederlands.`,
-    "Okay, I will talk to you in your language now!",
-    "This phone can offer you help on lots of different topics by connecting you to a local here in the station or around the city. You can also choose to speak to a service worker from the train company",
-    `What would you want help with?
-    1 Information on the station.
-    2 Help with public transport.
-    3 Tips about the Netherlands.`,
-    `Okay, good! Who do you want to talk to?
-    1 A local.
-    2 A service worker.
-    3 Google.
-    4 Surprise me!`,
-    `Are you satisfied with the help you received?
-    1 Yes.
-    2 No. Please help me again.
-    3 No.`,
-];
 const newMessage = ref("");
 const response = ref<string | null>(null);
 
@@ -46,12 +18,15 @@ const {
     prev,
     next,
 } = useOffsetPagination({
-    total: questions.length,
+    total: globalStore.questions.length,
     page: 1,
     pageSize: 1,
+    onPageChange: () => {
+        response.value = null;
+    },
 });
 
-const send = (content = newMessage.value, questionNumber?: number) => {
+const sendMessage = (content?: string, questionIndex?: number) => {
     const msg: Message = {
         id: uuid(),
         senderId: globalStore.id,
@@ -60,7 +35,7 @@ const send = (content = newMessage.value, questionNumber?: number) => {
         timestamp: new Date().toString(),
         role: globalStore.role!,
         recipientRole: Role.NEWCOMER,
-        questionNumber,
+        questionIndex,
     };
 
     $io.emit("send-message", msg);
@@ -77,12 +52,12 @@ $io.on("dial", (number: number) => {
             class="btn btn-primary h-auto py-3"
             @click="
                 () => {
-                    send(questions[currentPage - 1], currentPage);
+                    sendMessage(undefined, currentPage - 1);
                     currentPage++;
                 }
             "
         >
-            {{ questions[currentPage - 1] }}
+            {{ globalStore.questions[currentPage - 1].content }}
         </button>
         <template v-if="response !== null">
             <div class="btn btn-accent h-auto py-3 no-animation">
@@ -102,19 +77,11 @@ $io.on("dial", (number: number) => {
                 {{ i }}
             </button>
         </template>
-        <button
-            class="btn"
-            @click="
-                () => {
-                    next();
-                    response = null;
-                }
-            "
-        >
+        <button class="btn" @click="next()">
             <Icon name="ph:caret-right-bold" />
         </button>
     </div>
-    <form @submit.prevent="() => send()" class="flex flex-row gap-3">
+    <form @submit.prevent="() => sendMessage()" class="flex flex-row gap-3">
         <input
             ref="input"
             type="text"

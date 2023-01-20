@@ -57,13 +57,31 @@ const sendMessage = () => {
     input.value!.value = "";
 };
 $io.on("receive-message", async (msg: Message) => {
-    let message = msg;
+    let message: Message;
+
+    if (msg.content === undefined && msg.questionIndex !== undefined) {
+        const question = globalStore.questions[msg.questionIndex];
+        message = {
+            ...msg,
+            content:
+                question.content +
+                (question.options
+                    ? question.options
+                          ?.map((o, i) => ` ${i + 1}. ${o}`)
+                          .join(",")
+                    : ""),
+        };
+    } else if (msg.content !== undefined) {
+        message = msg;
+    } else {
+        return;
+    }
 
     if (message.origLang !== lang.value.code) {
         const { translations } = await $fetch("/api/translation", {
-            query: { text: msg.content, lang: lang.value.code },
+            query: { text: message.content, lang: lang.value.code },
         });
-        message = { ...msg, content: translations[0].text };
+        message = { ...message, content: translations[0].text };
     }
 
     addMessage(message);
@@ -72,7 +90,7 @@ $io.on("receive-message", async (msg: Message) => {
         message.role === Role.ADMIN &&
         message.recipientRole === globalStore.role
     ) {
-        speakText(message.content);
+        speakText(message.content!);
     }
 });
 $io.on("update-conversation", (conversation: Message[]) => {
@@ -135,7 +153,7 @@ const formatTimestamp = (timestamp: string) => {
                     </div>
                     <button
                         class="btn btn-ghost btn-circle"
-                        @click="() => speakText(m.content)"
+                        @click="() => speakText(m.content!)"
                     >
                         <Icon name="ph:speaker-high-fill" />
                     </button>
