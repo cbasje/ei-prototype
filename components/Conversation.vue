@@ -1,20 +1,28 @@
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import { v4 as uuid } from "uuid";
 import { Message, Role } from "~~/lib/types";
 import { useGlobalStore } from "~~/stores/global";
 
 const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
+const { voice } = storeToRefs(globalStore);
 
 const input = ref<HTMLInputElement | null>(null);
+const container = ref<HTMLDivElement | null>(null);
 const newMessage = ref("");
 const speechText = ref("");
 
-const { speak } = useSpeechSynthesis(speechText, {
-    lang: globalStore.lang.code,
-    volume: 1,
+const speech = useSpeechSynthesis(speechText, {
+    voice,
     rate: 0.9,
 });
+const speakText = (text: string) => {
+    speechText.value = text;
+    nextTick(() => {
+        speech.speak();
+    });
+};
 
 const send = () => {
     const msg: Message = {
@@ -32,13 +40,26 @@ const send = () => {
     newMessage.value = "";
     input.value!.value = "";
 };
-$io.on("receive-message", (msg: Message) => {
-    globalStore.messages.push(msg);
+$io.on("receive-message", async (msg: Message) => {
+    let message = msg;
 
-    if (msg.role === Role.ADMIN && msg.recipientRole === globalStore.role) {
-        // TODO: translate
-        speechText.value = msg.content;
-        speak();
+    if (message.origLang !== globalStore.lang.code) {
+        const { translations } = await $fetch("/api/translation", {
+            query: { text: msg.content, lang: globalStore.lang.code },
+        });
+        message = { ...msg, content: translations[0].text };
+    }
+
+    globalStore.messages.push(message);
+
+    if (container.value !== null)
+        container.value.scrollTop = container.value.scrollHeight + 48;
+
+    if (
+        message.role === Role.ADMIN &&
+        message.recipientRole === globalStore.role
+    ) {
+        speakText(message.content);
     }
 });
 $io.on("update-conversation", (conversation: Message[]) => {
@@ -54,7 +75,7 @@ const formatTimestamp = (timestamp: string) => {
 </script>
 
 <template>
-    <div class="flex-grow overflow-y-scroll">
+    <div ref="container" class="flex-grow overflow-y-scroll">
         <template v-for="m in globalStore.messages" :key="m.id">
             <div
                 v-if="
@@ -63,21 +84,29 @@ const formatTimestamp = (timestamp: string) => {
                     m.role !== Role.ADMIN
                 "
                 :class="[
-                    'chat',
+                    'chat flex flex-col',
                     m.senderId === globalStore.id ? 'chat-end' : 'chat-start',
                 ]"
             >
-                <div
-                    :class="[
-                        'chat-bubble',
-                        m.senderId === globalStore.id
-                            ? 'chat-bubble-primary'
-                            : m.role === Role.ADMIN
-                            ? 'chat-bubble-info'
-                            : 'chat-bubble-accent',
-                    ]"
-                >
-                    {{ m.content }}
+                <div class="flex">
+                    <div
+                        :class="[
+                            'chat-bubble',
+                            m.senderId === globalStore.id
+                                ? 'chat-bubble-primary'
+                                : m.role === Role.ADMIN
+                                ? 'chat-bubble-info'
+                                : 'chat-bubble-accent',
+                        ]"
+                    >
+                        {{ m.content }}
+                    </div>
+                    <button
+                        class="btn btn-ghost btn-circle"
+                        @click="() => speakText(m.content)"
+                    >
+                        <Icon name="ph:speaker-high-fill" />
+                    </button>
                 </div>
 
                 <div
