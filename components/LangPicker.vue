@@ -2,17 +2,11 @@
 import { storeToRefs } from "pinia";
 import { useGlobalStore } from "~~/stores/global";
 
-const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
 const { langIndex } = storeToRefs(globalStore);
 
 const speech = useSpeechSynthesis("");
 let synth: SpeechSynthesis;
-
-$io.on("dial", (lang: number) => {
-    console.log("DIAL");
-    langIndex.value = lang;
-});
 
 onMounted(() => {
     if (speech.isSupported.value) {

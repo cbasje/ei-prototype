@@ -7,7 +7,7 @@ const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
 
 const questions = [
-    `Hey, this is Phone-a-local. What language do you speak?
+    `Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.
     1 English.
     2 Deutsch.
     3 Français.
@@ -35,6 +35,7 @@ const questions = [
     3 No.`,
 ];
 const newMessage = ref("");
+const response = ref<string | null>(null);
 
 const {
     currentPage,
@@ -50,34 +51,44 @@ const {
     pageSize: 1,
 });
 
-const send = (content = newMessage.value) => {
+const send = (content = newMessage.value, questionNumber?: number) => {
     const msg: Message = {
         id: uuid(),
         senderId: globalStore.id,
-        origLang: globalStore.lang.code,
+        origLang: "en-GB",
         content,
         timestamp: new Date().toString(),
         role: globalStore.role!,
         recipientRole: Role.NEWCOMER,
+        questionNumber,
     };
 
     $io.emit("send-message", msg);
 };
+
+$io.on("dial", (number: number) => {
+    response.value = `${number}`;
+});
 </script>
 
 <template>
     <div class="flex-grow overflow-y-scroll">
         <button
-            class="btn btn-info"
+            class="btn btn-primary h-auto py-3"
             @click="
                 () => {
-                    send(questions[currentPage - 1]);
+                    send(questions[currentPage - 1], currentPage);
                     currentPage++;
                 }
             "
         >
             {{ questions[currentPage - 1] }}
         </button>
+        <template v-if="response !== null">
+            <div class="btn btn-accent h-auto py-3 no-animation">
+                {{ response }}
+            </div>
+        </template>
     </div>
     <div class="btn-group my-3">
         <button class="btn" @click="prev">
@@ -91,7 +102,15 @@ const send = (content = newMessage.value) => {
                 {{ i }}
             </button>
         </template>
-        <button class="btn" @click="next">
+        <button
+            class="btn"
+            @click="
+                () => {
+                    next();
+                    response = null;
+                }
+            "
+        >
             <Icon name="ph:caret-right-bold" />
         </button>
     </div>

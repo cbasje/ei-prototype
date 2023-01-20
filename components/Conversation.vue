@@ -6,7 +6,7 @@ import { useGlobalStore } from "~~/stores/global";
 
 const { $io } = useNuxtApp();
 const globalStore = useGlobalStore();
-const { voice } = storeToRefs(globalStore);
+const { lang, langIndex, voice } = storeToRefs(globalStore);
 
 const input = ref<HTMLInputElement | null>(null);
 const container = ref<HTMLDivElement | null>(null);
@@ -24,18 +24,34 @@ const speakText = (text: string) => {
     });
 };
 
-const send = () => {
+const addMessage = (msg: Message) => {
+    globalStore.messages.push(msg);
+
+    nextTick(() => {
+        if (container.value !== null) {
+            const children = container.value.children;
+
+            if (children.length > 0) {
+                const lastChild = children[children.length - 1];
+                container.value.scrollTop =
+                    container.value.scrollHeight +
+                    lastChild.getBoundingClientRect().height;
+            }
+        }
+    });
+};
+const sendMessage = () => {
     const msg: Message = {
         id: uuid(),
         senderId: globalStore.id,
-        origLang: globalStore.lang.code,
+        origLang: lang.value.code,
         content: newMessage.value,
         timestamp: new Date().toString(),
         role: globalStore.role!,
     };
 
     $io.emit("send-message", msg);
-    globalStore.messages.push(msg);
+    addMessage(msg);
 
     newMessage.value = "";
     input.value!.value = "";
@@ -43,17 +59,14 @@ const send = () => {
 $io.on("receive-message", async (msg: Message) => {
     let message = msg;
 
-    if (message.origLang !== globalStore.lang.code) {
+    if (message.origLang !== lang.value.code) {
         const { translations } = await $fetch("/api/translation", {
-            query: { text: msg.content, lang: globalStore.lang.code },
+            query: { text: msg.content, lang: lang.value.code },
         });
         message = { ...msg, content: translations[0].text };
     }
 
-    globalStore.messages.push(message);
-
-    if (container.value !== null)
-        container.value.scrollTop = container.value.scrollHeight + 48;
+    addMessage(message);
 
     if (
         message.role === Role.ADMIN &&
@@ -66,8 +79,25 @@ $io.on("update-conversation", (conversation: Message[]) => {
     globalStore.messages = conversation;
 });
 
+$io.on("dial", (number: number) => {
+    const messagesFromAdmin = globalStore.messages.filter(
+        (m) => m.role === Role.ADMIN
+    );
+    if (messagesFromAdmin[messagesFromAdmin.length - 1]?.questionNumber === 1)
+        langIndex.value = number;
+
+    addMessage({
+        id: uuid(),
+        senderId: globalStore.id,
+        origLang: lang.value.code,
+        content: `${number}`,
+        timestamp: new Date().toString(),
+        role: globalStore.role!,
+    });
+});
+
 const formatTimestamp = (timestamp: string) => {
-    return Intl.DateTimeFormat(globalStore.lang.code, {
+    return Intl.DateTimeFormat(lang.value.code, {
         dateStyle: undefined,
         timeStyle: "short",
     }).format(new Date(timestamp));
@@ -85,7 +115,9 @@ const formatTimestamp = (timestamp: string) => {
                 "
                 :class="[
                     'chat flex flex-col',
-                    m.senderId === globalStore.id ? 'chat-end' : 'chat-start',
+                    m.senderId === globalStore.id
+                        ? 'chat-end items-end justify-end'
+                        : 'chat-start',
                 ]"
             >
                 <div class="flex">
@@ -118,7 +150,7 @@ const formatTimestamp = (timestamp: string) => {
                 </div>
 
                 <div
-                    v-else-if="m.origLang !== globalStore.lang.code"
+                    v-else-if="m.origLang !== lang.code"
                     class="chat-footer opacity-50"
                 >
                     <Icon name="ph:translate-fill" />
@@ -131,7 +163,7 @@ const formatTimestamp = (timestamp: string) => {
             </div>
         </template>
     </div>
-    <form @submit.prevent="send()" class="flex flex-row gap-3">
+    <form @submit.prevent="sendMessage()" class="flex flex-row gap-3">
         <input
             ref="input"
             type="text"

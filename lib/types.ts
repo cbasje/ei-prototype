@@ -118,4 +118,5 @@ export type Message = {
     timestamp: string;
     role: Role;
     recipientRole?: Role;
+    questionNumber?: number;
 };
