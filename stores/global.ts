@@ -51,7 +51,12 @@ export const useGlobalStore = defineStore("global", () => {
         },
         {
             content: "Okay, good! Who do you want to talk to?",
-            options: ["A local", "A service worker", "Google", "Surprise me!"],
+            options: [
+                "A local person",
+                "A service worker",
+                "Google",
+                "Surprise me!",
+            ],
         },
         {
             content: "Are you satisfied with the help you received?",

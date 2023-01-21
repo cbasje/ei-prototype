@@ -18,7 +18,9 @@ const speech = useSpeechSynthesis(speechText, {
     rate: 0.9,
 });
 const speakText = (text: string) => {
+    speech.isPlaying.value = false;
     speechText.value = text;
+
     nextTick(() => {
         speech.speak();
     });
@@ -101,7 +103,7 @@ $io.on("dial", (number: number) => {
     const messagesFromAdmin = globalStore.messages.filter(
         (m) => m.role === Role.ADMIN
     );
-    if (messagesFromAdmin[messagesFromAdmin.length - 1]?.questionNumber === 1)
+    if (messagesFromAdmin[messagesFromAdmin.length - 1]?.questionIndex === 1)
         langIndex.value = number;
 
     addMessage({
