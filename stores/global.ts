@@ -19,59 +19,208 @@ export const useGlobalStore = defineStore("global", () => {
         { code: "uk-UA", name: "🇺🇦 украї́нська мо́ва" },
         { code: "pt-PT", name: "🇵🇹 Português" },
     ];
-    const questions: Question[] = [
-        {
-            content:
-                "Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.",
-            options: [
-                "English",
-                "Deutsch",
-                "Français",
-                "Italiano",
-                "Español",
-                "汉语/漢語",
-                "日本語",
-                "Bahasa Indonesia",
-                "Türkçe",
-                "Nederlands",
-            ],
-        },
-        { content: "Okay, I will talk to you in your language now!" },
-        {
-            content:
-                "This phone can offer you help on lots of different topics by connecting you to a local here in the station or around the city. You can also choose to speak to a service worker from the train company",
-        },
-        {
-            content: "What would you want help with?",
-            options: [
-                "Information on the station",
-                "Help with public transport",
-                "Tips about the Netherlands",
-            ],
-        },
-        {
-            content: "Okay, good! Who do you want to talk to?",
-            options: [
-                "A local person",
-                "A service worker",
-                "Google",
-                "Surprise me!",
-            ],
-        },
-        {
-            content: "Are you satisfied with the help you received?",
-            options: ["Yes", "No. Please help me again", "No"],
-        },
-        {
-            content:
-                "I'm sorry you were not satisfied. What would you want help with?",
-            options: [
-                "Information on the station",
-                "Help with public transport",
-                "Tips about the Netherlands",
-            ],
-        },
-    ];
+    const questions: Record<number, Question[]> = {
+        0: [
+            {
+                id: "1N",
+                content:
+                    "Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.",
+                options: [
+                    "English",
+                    "Deutsch",
+                    "Français",
+                    "Italiano",
+                    "Español",
+                    "汉语/漢語",
+                    "日本語",
+                    "Bahasa Indonesia",
+                    "Türkçe",
+                    "Nederlands",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "2N",
+                content: "Okay, I will talk to you in Spanish now!",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "3N",
+                content:
+                    "The Phone-a-local is a device that allows newcomers to request any type of help from locals or information desks.",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "4N",
+                content: "What would you want help with?",
+                options: [
+                    "Information on the station",
+                    "Help with public transport",
+                    "Tips about the Netherlands",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "5N",
+                content: "Okay, good! Who do you want to talk to?",
+                options: [
+                    "A local person",
+                    "The information desk",
+                    "Surprise me!",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "6N",
+                content:
+                    "Okay, I will call up a local here in the station for you now!",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "1L",
+                content:
+                    "Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.",
+                options: [
+                    "English",
+                    "Deutsch",
+                    "Français",
+                    "Italiano",
+                    "Español",
+                    "汉语/漢語",
+                    "日本語",
+                    "Bahasa Indonesia",
+                    "Türkçe",
+                    "Nederlands",
+                ],
+                recipientRole: Role.LOCAL,
+            },
+            {
+                id: "2L",
+                content: "Okay, I will talk to you in Dutch now!",
+                recipientRole: Role.LOCAL,
+            },
+            {
+                id: "3L",
+                content:
+                    "The Phone-a-local helps newcomers request for help from locals like you. There is a newcomer on the line who needs help with finding a train. Can you help them?",
+                options: ["Yes", "No"],
+                recipientRole: Role.LOCAL,
+            },
+            {
+                id: "4L",
+                content:
+                    "Okay, thank you! I will connect you now! They are at platform 1. Also, they speak Spanish so I can translate if you want.",
+                recipientRole: Role.LOCAL,
+            },
+            {
+                id: "8N",
+                content:
+                    "Here is a local, I will connect you now! They are at platform 7. They speak Dutch so I can translate if you want",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "9N",
+                content: "Are you satisfied with the help you received?",
+                options: ["Yes", "No"],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "10N",
+                content: "Glad I could help. Have a nice day!",
+                recipientRole: Role.NEWCOMER,
+            },
+        ],
+        1: [
+            {
+                id: "1N",
+                content:
+                    "Hey, this is Phone-a-local. What language do you speak? Dial the number on the phone to choose an option.",
+                options: [
+                    "English",
+                    "Deutsch",
+                    "Français",
+                    "Italiano",
+                    "Español",
+                    "汉语/漢語",
+                    "日本語",
+                    "Bahasa Indonesia",
+                    "Türkçe",
+                    "Nederlands",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "2N",
+                content: "Okay, I will talk to you in Spanish now!",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "3N",
+                content:
+                    "The Phone-a-local is a device that allows newcomers to request any type of help from locals or information desks.",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "4N",
+                content: "What would you want help with?",
+                options: [
+                    "Information on the station",
+                    "Help with public transport",
+                    "Tips about the Netherlands",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "5N",
+                content: "Okay, good! Who do you want to talk to?",
+                options: [
+                    "A local person",
+                    "The information desk",
+                    "Surprise me!",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "6N",
+                content: "Okay, I will call the information desk for you now!",
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "1L",
+                content: "Hey, this is Phone-a-local.",
+                recipientRole: Role.LOCAL,
+            },
+            {
+                id: "2L",
+                content:
+                    "There is a newcomer on the line who needs help with tips on the Netherlands.",
+                recipientRole: Role.LOCAL,
+            },
+            {
+                id: "7N",
+                content: "Are you satisfied with the help you received?",
+                options: ["Yes", "No. Please help me again", "No"],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "8N",
+                content:
+                    "Sorry to hear that. Would you like to talk to someone else?",
+                options: [
+                    "Yes - A local person",
+                    "Yes - The information desk",
+                    "No",
+                ],
+                recipientRole: Role.NEWCOMER,
+            },
+            {
+                id: "9N",
+                content:
+                    "Okay, I will call up a local somewhere in the city for you now!",
+                recipientRole: Role.NEWCOMER,
+            },
+        ],
+    };
 
     const id = ref(uuid());
     const langIndex = ref(1);

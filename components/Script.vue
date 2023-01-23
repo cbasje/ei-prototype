@@ -9,6 +9,10 @@ const globalStore = useGlobalStore();
 const newMessage = ref("");
 const response = ref<string | null>(null);
 
+const props = defineProps<{
+    scenario: number;
+}>();
+
 const {
     currentPage,
     currentPageSize,
@@ -18,7 +22,7 @@ const {
     prev,
     next,
 } = useOffsetPagination({
-    total: globalStore.questions.length,
+    total: globalStore.questions[props.scenario].length,
     page: 1,
     pageSize: 1,
     onPageChange: () => {
@@ -26,7 +30,21 @@ const {
     },
 });
 
-const sendMessage = (content?: string, questionIndex?: number) => {
+const sendMessage = (text?: string, questionIndex?: number) => {
+    let content = text;
+    const question =
+        questionIndex !== undefined
+            ? globalStore.questions[props.scenario][questionIndex]
+            : undefined;
+
+    if (content === undefined && question !== undefined) {
+        content =
+            question.content +
+            (question.options
+                ? question.options?.map((o, i) => ` ${i + 1}. ${o}`).join(",")
+                : "");
+    }
+
     const msg: Message = {
         id: uuid(),
         senderId: globalStore.id,
@@ -34,8 +52,8 @@ const sendMessage = (content?: string, questionIndex?: number) => {
         content,
         timestamp: new Date().toString(),
         role: globalStore.role!,
-        recipientRole: Role.NEWCOMER,
-        questionIndex,
+        recipientRole: question?.recipientRole ?? Role.NEWCOMER,
+        questionId: question?.id,
     };
 
     $io.emit("send-message", msg);
@@ -57,7 +75,7 @@ $io.on("dial", (number: number) => {
                 }
             "
         >
-            {{ globalStore.questions[currentPage - 1].content }}
+            {{ globalStore.questions[scenario][currentPage - 1].content }}
         </button>
         <template v-if="response !== null">
             <div class="btn btn-accent h-auto py-3 no-animation">

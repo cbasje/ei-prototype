@@ -104,8 +104,10 @@ export type Language = {
     name: string;
 };
 export type Question = {
+    id: string;
     content: string;
     options?: string[];
+    recipientRole: Role;
 };
 
 export enum Role {
@@ -122,5 +124,5 @@ export type Message = {
     timestamp: string;
     role: Role;
     recipientRole?: Role;
-    questionIndex?: number;
+    questionId?: string;
 };

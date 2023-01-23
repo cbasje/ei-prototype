@@ -59,25 +59,7 @@ const sendMessage = () => {
     input.value!.value = "";
 };
 $io.on("receive-message", async (msg: Message) => {
-    let message: Message;
-
-    if (msg.content === undefined && msg.questionIndex !== undefined) {
-        const question = globalStore.questions[msg.questionIndex];
-        message = {
-            ...msg,
-            content:
-                question.content +
-                (question.options
-                    ? question.options
-                          ?.map((o, i) => ` ${i + 1}. ${o}`)
-                          .join(",")
-                    : ""),
-        };
-    } else if (msg.content !== undefined) {
-        message = msg;
-    } else {
-        return;
-    }
+    let message = msg;
 
     if (message.origLang !== lang.value.code) {
         const { translations } = await $fetch("/api/translation", {
@@ -103,8 +85,18 @@ $io.on("dial", (number: number) => {
     const messagesFromAdmin = globalStore.messages.filter(
         (m) => m.role === Role.ADMIN
     );
-    if (messagesFromAdmin[messagesFromAdmin.length - 1]?.questionIndex === 1)
-        langIndex.value = number;
+    const lastQuestionFromAdmin =
+        messagesFromAdmin[messagesFromAdmin.length - 1];
+
+    if (lastQuestionFromAdmin !== undefined) {
+        // If the id of the last question by admin is 1, update the language
+        if (
+            lastQuestionFromAdmin.questionId === "1N" ||
+            lastQuestionFromAdmin.questionId === "1L"
+        ) {
+            langIndex.value = number;
+        }
+    }
 
     addMessage({
         id: uuid(),
